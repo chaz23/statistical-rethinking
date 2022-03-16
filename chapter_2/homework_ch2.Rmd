@@ -1,0 +1,108 @@
+---
+title: "Chapter 2 Homework"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r, echo = FALSE}
+library(dplyr)
+library(rethinking)
+library(ggplot2)
+```
+
+
+### 2M1.
+
+**Q:**
+
+Recall the globe tossing model from the chapter. Compute and plot the grid approximate posterior distribution for each of the following sets of observations. In each case, assume a uniform prior for p.
+
+1. [W, W, W]
+2. [W, W, W, L]
+3. [L, W, W, L, W, W, W]
+
+**Solution:**
+
+W ~ Binomial(N, p)  
+p ~ Uniform(0, 1)
+
+Note: *Likelihood* means a distribution function (in this case the binomial distribution) assigned to an observed variable (in this case the W's and L's).
+
+```{r}
+# p is our conjectured value, and we construct a grid by distributing it uniformly between 0 and 1.
+p_grid <- seq(0, 1, by = 0.01)
+
+# Priors. This encodes the prior plausibility of each value of p.
+priors <- rep(1, length(p_grid))
+
+# x and size encode the observed data.
+out <- tibble(x = c(3, 3, 5),
+              size = c(3, 4, 7)) %>% 
+  mutate(likelihoods = purrr::map2(x, size, ~ dbinom(x = .x, size = .y, prob = p_grid)),
+         prior = list(priors),
+         unstd_posterior = purrr::map2(likelihoods, prior, ~ .x * .y),
+         std_posterior = purrr::map(unstd_posterior, ~ .x / sum(.x)),
+         p = list(p_grid))
+
+out %>% 
+  tidyr::unnest(cols = c(std_posterior, p)) %>% 
+  ggplot(aes(p, std_posterior)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ size, ncol = 1)
+```
+
+
+### 2M2.
+
+**Q:**
+
+Now assume a prior for p that is equal to zero when p < 0.5 and is a positive constant when p ≥ 0.5. Again compute and plot the grid approximate posterior distribution for each of the sets of observations in the problem just above.
+
+```{r}
+p_grid <- seq(0, 1, by = 0.01)
+priors <- ifelse(p_grid < 0.5, 0, 1)
+
+out <- tibble(x = c(3, 3, 5),
+              size = c(3, 4, 7)) %>% 
+  mutate(likelihoods = purrr::map2(x, size, ~ dbinom(x = .x, size = .y, prob = p_grid)),
+         prior = list(priors),
+         unstd_posterior = purrr::map2(likelihoods, prior, ~ .x * .y),
+         std_posterior = purrr::map(unstd_posterior, ~ .x / sum(.x)),
+         p = list(p_grid))
+
+out %>% 
+  tidyr::unnest(cols = c(std_posterior, p)) %>% 
+  ggplot(aes(p, std_posterior)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ size, ncol = 1)
+```
+
+
+### 2M3.
+
+**Q:**
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
