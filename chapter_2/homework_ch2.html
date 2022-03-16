@@ -177,7 +177,7 @@ pre code {
 <li>[W, W, W, L]</li>
 <li>[L, W, W, L, W, W, W]</li>
 </ol>
-<p><strong>Solution:</strong></p>
+<p><strong>A:</strong></p>
 <p>W ~ Binomial(N, p)<br />
 p ~ Uniform(0, 1)</p>
 <p>Note: <em>Likelihood</em> means a distribution function (in this case the binomial distribution) assigned to an observed variable (in this case the W’s and L’s).</p>
@@ -208,6 +208,7 @@ out %&gt;%
 <h3>2M2.</h3>
 <p><strong>Q:</strong></p>
 <p>Now assume a prior for p that is equal to zero when p &lt; 0.5 and is a positive constant when p ≥ 0.5. Again compute and plot the grid approximate posterior distribution for each of the sets of observations in the problem just above.</p>
+<p><strong>A:</strong></p>
 <pre class="r"><code>p_grid &lt;- seq(0, 1, by = 0.01)
 priors &lt;- ifelse(p_grid &lt; 0.5, 0, 1)
 
@@ -230,6 +231,223 @@ out %&gt;%
 <div id="m3." class="section level3">
 <h3>2M3.</h3>
 <p><strong>Q:</strong></p>
+<p>Suppose there are two globes, one for Earth and one for Mars. The Earth globe is 70% covered in water. The Mars globe is 100% land. Further suppose that one of these globes—you don’t know which—was tossed in the air and produced a “land” observation. Assume that each globe was equally likely to be tossed. Show that the posterior probability that the globe was the Earth, conditional on seeing “land” (Pr(Earth|land)), is 0.23.</p>
+<p><strong>A:</strong></p>
+<pre class="r"><code># E - 70% W
+# M - 0% W
+
+# Conjectures:
+# E, M
+
+# Data:
+# W, L
+
+tidyr::crossing(planet = c(&quot;E&quot;, &quot;M&quot;), conjectures = c(&quot;L&quot;, &quot;W&quot;)) %&gt;% 
+  mutate(props = c(0.3, 0.7, 1, 0))</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##   planet conjectures props
+##   &lt;chr&gt;  &lt;chr&gt;       &lt;dbl&gt;
+## 1 E      L             0.3
+## 2 E      W             0.7
+## 3 M      L             1  
+## 4 M      W             0</code></pre>
+<pre class="r"><code># Probability of being Earth given L.
+0.3 / 1.3</code></pre>
+<pre><code>## [1] 0.2307692</code></pre>
+</div>
+<div id="m4." class="section level3">
+<h3>2M4.</h3>
+<p><strong>Q:</strong></p>
+<p>Suppose you have a deck with only three cards. Each card has two sides, and each side is either black or white. One card has two black sides. The second card has one black and one white side. The third card has two white sides. Now suppose all three cards are placed in a bag and shuffled. Someone reaches into the bag and pulls out a card and places it flat on a table. A black side is shown facing up, but you don’t know the color of the side facing down. Show that the probability that the other side is also black is 2/3. Use the counting method (Section 2 of the chapter) to approach this problem. This means counting up the ways that each card could produce the observed data (a black side facing up on the table).</p>
+<p><strong>A:</strong></p>
+<p>Cards:</p>
+<p>[B1, B2]<br />
+[B1, W2]<br />
+[W1, W2]</p>
+<p>Possibilities:</p>
+<p>[B1, B2]<br />
+[B2, B1]<br />
+[B1, W2]<br />
+[W2, B1] - eliminated<br />
+[W1, W2] - eliminated<br />
+[W2, W1] - eliminated</p>
+<p>Therefore probability that side 2 is black is 2/3.</p>
+</div>
+<div id="m5." class="section level3">
+<h3>2M5.</h3>
+<p><strong>Q:</strong></p>
+<p>Now suppose there are four cards: B/B, B/W, W/W, and another B/B. Again suppose a card is drawn from the bag and a black side appears face up. Again calculate the probability that the other side is black.</p>
+<p><strong>A:</strong></p>
+<p>Cards:</p>
+<p>[B1, B2]<br />
+[B1, B2]<br />
+[B1, W2]<br />
+[W1, W2]</p>
+<p>Possibilities:</p>
+<p>[B1, B2]<br />
+[B2, B1]<br />
+[B1, B2]<br />
+[B2, B1]<br />
+[B1, W2]<br />
+[W2, B1] - eliminated<br />
+[W1, W2] - eliminated<br />
+[W2, W1] - eliminated</p>
+<p>Therefore probability that side 2 is black is 4/5.</p>
+</div>
+<div id="m6." class="section level3">
+<h3>2M6.</h3>
+<p><strong>Q:</strong></p>
+<p>Imagine that black ink is heavy, and so cards with black sides are heavier than cards with white sides. As a result, it’s less likely that a card with black sides is pulled from the bag. So again assume there are three cards: B/B, B/W, and W/W. After experimenting a number of times, you conclude that for every way to pull the B/B card from the bag, there are 2 ways to pull the B/W card and 3 ways to pull the W/W card. Again suppose that a card is pulled and a black side appears face up. Show that the probability the other side is black is now 0.5. Use the counting method, as before.</p>
+<p><strong>A:</strong></p>
+<p>Cards:</p>
+<p>[B1, B2]M1<br />
+[B1, W2]M1<br />
+[B1, W2]M2<br />
+[W1, W2]M1<br />
+[W1, W2]M2</p>
+<p>Possibilities:</p>
+<p>[B1, B2]<br />
+[B2, B1]<br />
+[B1, W2]M1<br />
+[W2, B1]M1 - eliminated<br />
+[B1, W2]M2<br />
+[W2, B1]M2 - eliminated<br />
+[W1, W2]M1 - eliminated<br />
+[W2, W1]M1 - eliminated<br />
+[W1, W2]M2 - eliminated<br />
+[W2, W1]M2 - eliminated<br />
+[W1, W2]M3 - eliminated<br />
+[W2, W1]M3 - eliminated</p>
+<p>Therefore probability of other side being black = 0.5</p>
+</div>
+<div id="m7." class="section level3">
+<h3>2M7.</h3>
+<p><strong>Q:</strong></p>
+<p>Assume again the original card problem, with a single card showing a black side face up. Before looking at the other side, we draw another card from the bag and lay it face up on the table. The face that is shown on the new card is white. Show that the probability that the first card, the one showing a black side, has black on its other side is now 0.75. Use the counting method, if you can. Hint: Treat this like the sequence of globe tosses, counting all the ways to see each observation, for each possible first card.</p>
+<p><strong>A:</strong></p>
+<p>Cards:</p>
+<p>[B1, B2]<br />
+[B1, W2]<br />
+[W1, W2]</p>
+<p>Possibilities:</p>
+<p>[B1, B2] &amp; [B1, W2] - eliminated<br />
+[B1, B2] &amp; [W2, B1]<br />
+[B1, B2] &amp; [W1, W2]<br />
+[B1, B2] &amp; [W2, W1]</p>
+<p>[B2, B1] &amp; [B1, W2] - eliminated<br />
+[B2, B1] &amp; [W2, B1]<br />
+[B2, B1] &amp; [W1, W2]<br />
+[B2, B1] &amp; [W2, W1]</p>
+<p>[B1, W2] &amp; [B1, B2] - eliminated<br />
+[B1, W2] &amp; [B2, B1] - eliminated<br />
+[B1, W2] &amp; [W1, W2]<br />
+[B1, W2] &amp; [W2, W1]</p>
+<p>[W2, B1] &amp; [B1, B2] - eliminated<br />
+[W2, B1] &amp; [B2, B1] - eliminated<br />
+[W2, B1] &amp; [W1, W2] - eliminated<br />
+[W2, B1] &amp; [W2, W1] - eliminated</p>
+<p>[W1, W2] &amp; [B1, B2] - eliminated<br />
+[W1, W2] &amp; [B2, B1] - eliminated<br />
+[W1, W2] &amp; [B1, W2] - eliminated<br />
+[W1, W2] &amp; [W2, B1] - eliminated</p>
+<p>[W2, W1] &amp; [B1, B2] - eliminated<br />
+[W2, W1] &amp; [B2, B1] - eliminated<br />
+[W2, W1] &amp; [B1, W2] - eliminated<br />
+[W2, W1] &amp; [W2, B1] - eliminated</p>
+<p>Therefore possibility of first card having a black opposite side = 6/8 = 0.75</p>
+</div>
+<div id="h1." class="section level3">
+<h3>2H1.</h3>
+<p><strong>Q:</strong></p>
+<p>Suppose there are two species of panda bear. Both are equally common in the wild and live in the same places. They look exactly alike and eat the same food, and there is yet no genetic assay capable of telling them apart. They differ however in their family sizes. Species A gives birth to twins 10% of the time, otherwise birthing a single infant. Species B births twins 20% of the time, otherwise birthing singleton infants. Assume these numbers are known with certainty, from many years of field research.</p>
+<p>Now suppose you are managing a captive panda breeding program. You have a new female panda of unknown species, and she has just given birth to twins. What is the probability that her next birth will also be twins?</p>
+<p><strong>A:</strong></p>
+<pre class="r"><code># Prior plausibilities:
+# Probabilities for birthing twins in each species.
+# p = 0.1 for A
+# p = 0.2 for B
+
+# The pro
+
+# Conjectures:
+# (T = twins, S = single)
+
+conj &lt;- tidyr::crossing(
+  species = c(&quot;A&quot;, &quot;B&quot;),
+  infant_1_is_twin = c(TRUE, FALSE),
+  infant_2_is_twin = c(TRUE, FALSE)
+) %&gt;% 
+  mutate(prob_of_twin = case_when(species == &quot;A&quot; ~ 0.1,
+                                  TRUE ~ 0.2),
+         valid = case_when(infant_1_is_twin ~ TRUE,
+                           TRUE ~ FALSE),
+         p = purrr::pmap_dbl(list(infant_1_is_twin, infant_2_is_twin, prob_of_twin),
+                             ~ dbinom(x = ..1 + ..2, size = 2, prob = ..3)))
+
+# Therefore, probability that second birth will also be a twin:
+conj %&gt;% 
+  filter(valid) %&gt;% 
+  group_by(infant_1_is_twin, infant_2_is_twin) %&gt;% 
+  summarise(p = sum(p)) %&gt;% 
+  mutate(p = p / sum(p))</code></pre>
+<pre><code>## # A tibble: 2 x 3
+## # Groups:   infant_1_is_twin [1]
+##   infant_1_is_twin infant_2_is_twin      p
+##   &lt;lgl&gt;            &lt;lgl&gt;             &lt;dbl&gt;
+## 1 TRUE             FALSE            0.909 
+## 2 TRUE             TRUE             0.0909</code></pre>
+</div>
+<div id="h2." class="section level3">
+<h3>2H2.</h3>
+<p><strong>Q:</strong></p>
+<p>Recall all the facts from the problem above. Now compute the probability that the panda we have is from species A, assuming we have observed only the first birth and that it was twins.</p>
+<p><strong>A:</strong></p>
+<pre class="r"><code>tidyr::crossing(
+  species = c(&quot;A&quot;, &quot;B&quot;),
+  infant_1_is_twin = c(TRUE, FALSE)
+) %&gt;% 
+  mutate(prob_of_twin = case_when(species == &quot;A&quot; ~ 0.1,
+                                  TRUE ~ 0.2),
+         valid = case_when(infant_1_is_twin ~ TRUE,
+                           TRUE ~ FALSE),
+         p = purrr::map2_dbl(infant_1_is_twin, prob_of_twin,
+                             ~ dbinom(x = as.numeric(.x), size = 2, prob = .y)))</code></pre>
+<pre><code>## # A tibble: 4 x 5
+##   species infant_1_is_twin prob_of_twin valid     p
+##   &lt;chr&gt;   &lt;lgl&gt;                   &lt;dbl&gt; &lt;lgl&gt; &lt;dbl&gt;
+## 1 A       FALSE                     0.1 FALSE  0.81
+## 2 A       TRUE                      0.1 TRUE   0.18
+## 3 B       FALSE                     0.2 FALSE  0.64
+## 4 B       TRUE                      0.2 TRUE   0.32</code></pre>
+<p>Therefore probability that this panda is species A:</p>
+<pre class="r"><code>0.18 / 0.5</code></pre>
+<pre><code>## [1] 0.36</code></pre>
+</div>
+<div id="h3." class="section level3">
+<h3>2H3.</h3>
+<p><strong>Q:</strong></p>
+<p>Continuing on from the previous problem, suppose the same panda mother has a second birth and that it is not twins, but a singleton infant. Compute the posterior probability that this panda is species A.</p>
+<pre class="r"><code>tidyr::crossing(
+  species = c(&quot;A&quot;, &quot;B&quot;),
+  infant_1_is_twin = c(TRUE, FALSE)
+) %&gt;% 
+  mutate(prob_of_twin = case_when(species == &quot;A&quot; ~ 0.1,
+                                  TRUE ~ 0.2),
+         valid = case_when(infant_1_is_twin ~ TRUE,
+                           TRUE ~ FALSE),
+         p = purrr::map2_dbl(infant_1_is_twin, prob_of_twin,
+                             ~ dbinom(x = as.numeric(.x), size = 2, prob = .y))) %&gt;% 
+  filter(infant_1_is_twin) %&gt;% 
+  mutate(p_new = purrr::map2_dbl(prob_of_twin, p,
+                                 ~ dbinom(x = 1, size = 2, prob = 1 - .x) * .y))</code></pre>
+<pre><code>## # A tibble: 2 x 6
+##   species infant_1_is_twin prob_of_twin valid     p  p_new
+##   &lt;chr&gt;   &lt;lgl&gt;                   &lt;dbl&gt; &lt;lgl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+## 1 A       TRUE                      0.1 TRUE   0.18 0.0324
+## 2 B       TRUE                      0.2 TRUE   0.32 0.102</code></pre>
+<p>Therefore probability that this panda is species A:</p>
+<pre class="r"><code>0.0324 / (0.0324 + 0.102)</code></pre>
+<pre><code>## [1] 0.2410714</code></pre>
 </div>
 
 
